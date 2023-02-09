@@ -1,9 +1,6 @@
 package lexer;
 
-import lexer.Tokens.MinusToken;
-import lexer.Tokens.NumberToken;
-import lexer.Tokens.PlusToken;
-import lexer.Tokens.Token;
+import lexer.Tokens.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +12,8 @@ public class Lexer {
     public List<Token> read(String line) {
         PlusToken plus = PlusToken.getInstance();
         MinusToken minus = MinusToken.getInstance();
+        OpenParenthesesToken open = OpenParenthesesToken.getInstance();
+        CloseParenthesesToken close = CloseParenthesesToken.getInstance();
 
         for (char c : line.toCharArray()) {
             switch (c) {
@@ -31,6 +30,13 @@ public class Lexer {
                     exitNumberState();
                     result.add(minus);
                     break;
+                case '(':
+                    exitNumberState();
+                    result.add(open);
+                    break;
+                case ')':
+                    exitNumberState();
+                    result.add(close);
                 default:
                     if ('0' <= c && c <= '9') {
                         enterNumberState(c);
