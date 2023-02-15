@@ -2,12 +2,7 @@ package lexer.Tokens;
 
 import java.io.Serializable;
 
-public class NumberToken implements Token, Serializable {
-    public final int n;
-
-    public NumberToken(int n) {
-        this.n = n;
-    }
+public record NumberToken(int n) implements Token, Serializable {
 
     @Override
     public TokenType getType() {
