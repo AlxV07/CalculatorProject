@@ -8,6 +8,6 @@ public class MinusNode extends OperatorNode implements AstNode{
 
     @Override
     public int eval() {
-        return left.eval()- right.eval();
+        return left.eval() - right.eval();
     }
 }

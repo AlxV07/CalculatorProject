@@ -12,6 +12,8 @@ public class Lexer {
     public List<Token> read(String line) {
         PlusToken plus = PlusToken.getInstance();
         MinusToken minus = MinusToken.getInstance();
+        MultiplicationToken multiple = MultiplicationToken.getInstance();
+        DivisionToken divisor = DivisionToken.getInstance();
         OpenParenthesesToken open = OpenParenthesesToken.getInstance();
         CloseParenthesesToken close = CloseParenthesesToken.getInstance();
 
@@ -29,6 +31,14 @@ public class Lexer {
                 case '-':
                     exitNumberState();
                     result.add(minus);
+                    break;
+                case '*':
+                    exitNumberState();
+                    result.add(multiple);
+                    break;
+                case '/':
+                    exitNumberState();
+                    result.add(divisor);
                     break;
                 case '(':
                     exitNumberState();

@@ -6,4 +6,6 @@ public enum TokenType {
     OPEN,
     CLOSE,
     NUMBER,
+    MULTIPLICATION,
+    DIVISION,
 }
