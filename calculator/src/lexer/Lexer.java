@@ -55,7 +55,6 @@ public class Lexer {
             }
         }
         exitNumberState();
-        System.out.println(result);
         return result;
     }
 
