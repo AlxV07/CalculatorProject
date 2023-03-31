@@ -6,52 +6,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Lexer {
-    List<Token> result = new ArrayList<>();
-    String numberAccumulator = "";
+    private final PlusToken plus;
+    private final MinusToken minus;
+    private final MultiplicationToken multiple;
+    private final DivisionToken divisor;
+    private final OpenParenthesesToken open;
+    private final CloseParenthesesToken close;
+    private final List<Token> result;
+    private String numberAccumulator;
+
+    public Lexer() {
+        this.plus = PlusToken.getInstance();
+        this.minus = MinusToken.getInstance();
+        this.multiple = MultiplicationToken.getInstance();
+        this.divisor = DivisionToken.getInstance();
+        this.open = OpenParenthesesToken.getInstance();
+        this.close = CloseParenthesesToken.getInstance();
+        this.result = new ArrayList<>();
+        this.numberAccumulator = "";
+    }
 
     public List<Token> read(String line) {
-        PlusToken plus = PlusToken.getInstance();
-        MinusToken minus = MinusToken.getInstance();
-        MultiplicationToken multiple = MultiplicationToken.getInstance();
-        DivisionToken divisor = DivisionToken.getInstance();
-        OpenParenthesesToken open = OpenParenthesesToken.getInstance();
-        CloseParenthesesToken close = CloseParenthesesToken.getInstance();
-
+        result.clear();
         for (char c : line.toCharArray()) {
             switch (c) {
-                case ' ':
-                case '\t':
-                case '\n':
-                    exitNumberState();
-                    break;
-                case '+':
+                case ' ', '\t', '\n' -> exitNumberState();
+                case '+' -> {
                     exitNumberState();
                     result.add(plus);
-                    break;
-                case '-':
+                }
+                case '-' -> {
                     exitNumberState();
                     result.add(minus);
-                    break;
-                case '*':
+                }
+                case '*' -> {
                     exitNumberState();
                     result.add(multiple);
-                    break;
-                case '/':
+                }
+                case '/' -> {
                     exitNumberState();
                     result.add(divisor);
-                    break;
-                case '(':
+                }
+                case '(' -> {
                     exitNumberState();
                     result.add(open);
-                    break;
-                case ')':
+                }
+                case ')' -> {
                     exitNumberState();
                     result.add(close);
-                default:
+                }
+                default -> {
                     if ('0' <= c && c <= '9') {
                         enterNumberState(c);
                     }
-                    break;
+                }
             }
         }
         exitNumberState();

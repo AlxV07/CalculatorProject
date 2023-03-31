@@ -13,7 +13,6 @@ public class Parser {
         if (tokens.size() == 1) {
             return new NumberNode(((NumberToken) tokens.get(0)).n());
         }
-
         boolean isInsideParenGroup = false;
         int exteriorOpenParenIndex = -1;
         int exteriorCloseParenIndex;
@@ -41,8 +40,6 @@ public class Parser {
                 }
             }
         }
-
-
         for (int i = tokens.size() - 1; i >= 0; i--) {
             if (tokens.get(i).getType() == TokenType.PLUS) {
                 return new PlusNode(parse(tokens.subList(0, i)), parse(tokens.subList(i + 1, tokens.size())));
