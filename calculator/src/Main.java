@@ -8,7 +8,7 @@ public class Main {
         Lexer lexer = new Lexer();
         Parser parser = new Parser();
 
-        AstNode astNode = parser.parse(lexer.read("1"));
+        AstNode astNode = parser.parse(lexer.read("(10 - (5 - 3) + (10 - 5)) / 13"));
         System.out.println(astNode.eval());
     }
 }

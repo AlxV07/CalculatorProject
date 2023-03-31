@@ -8,51 +8,49 @@ import java.util.List;
 
 public class Parser {
     public AstNode parse(List<Token> tokens) {
-
         if (tokens.size() == 1) {
             return new NumberNode(((NumberToken) tokens.get(0)).n());
         }
 
-//        boolean checkingForParentheses = false;
-//        int parenthesesStartIndex = -1;
-//        int parenthesesEndIndex;
-//        int parenthesesLevel = 0;
-//        for (int i = 0; i < tokens.size(); i++) {
-//            if (tokens.get(i).getType() == TokenType.OPEN) {
-//                if (!checkingForParentheses) {
-//                    checkingForParentheses = true;
-//                    parenthesesStartIndex = i;
-//                }
-//                parenthesesLevel++;
-//            }
-//            else if (tokens.get(i).getType() == TokenType.CLOSE) {
-//                parenthesesLevel--;
-//                if (parenthesesLevel == 0) {
-//                    parenthesesEndIndex = i;
-//                    NumberToken t = new NumberToken(parse(tokens.subList(parenthesesStartIndex + 1, parenthesesEndIndex)).eval());
-//                    if (parenthesesEndIndex >= parenthesesStartIndex) {
-//                        tokens.subList(parenthesesStartIndex, parenthesesEndIndex + 1).clear();
-//                    }
-//                    tokens.add(parenthesesStartIndex, t);
-//                    return parse(tokens);
-//                }
-//            }
-//        }
-
+        boolean isInsideParenGroup = false;
+        int exteriorOpenParenIndex = -1;
+        int exteriorCloseParenIndex;
+        int parenLevel = 0;
         for (int i = 0; i < tokens.size(); i++) {
-            if (tokens.get(i).getType() == TokenType.PLUS) {
-                return new PlusNode(parse(tokens.subList(0, i)), parse(tokens.subList(i+1, tokens.size())));
+            if (tokens.get(i).getType() == TokenType.OPEN) {
+                if (!isInsideParenGroup) {
+                    isInsideParenGroup = true;
+                    exteriorOpenParenIndex = i;
+                }
+                parenLevel++;
             }
-            else if (tokens.get(i).getType() == TokenType.MINUS) {
-                return new MinusNode(parse(tokens.subList(0, i)), parse(tokens.subList(i+1, tokens.size())));
+            else if (tokens.get(i).getType() == TokenType.CLOSE) {
+                parenLevel--;
+                if (parenLevel == 0) {
+                    exteriorCloseParenIndex = i;
+                    NumberToken t = new NumberToken(parse(tokens.subList(exteriorOpenParenIndex + 1, exteriorCloseParenIndex)).eval());
+                    tokens.subList(exteriorOpenParenIndex, exteriorCloseParenIndex + 1).clear();
+                    tokens.add(exteriorOpenParenIndex, t);
+                    return parse(tokens);
+                }
             }
         }
-        for (int i = 0; i < tokens.size(); i++) {
+
+
+        for (int i = tokens.size() - 1; i >= 0; i--) {
+            if (tokens.get(i).getType() == TokenType.PLUS) {
+                return new PlusNode(parse(tokens.subList(0, i)), parse(tokens.subList(i + 1, tokens.size())));
+            }
+            else if (tokens.get(i).getType() == TokenType.MINUS) {
+                return new MinusNode(parse(tokens.subList(0, i)), parse(tokens.subList(i + 1, tokens.size())));
+            }
+        }
+        for (int i = tokens.size() - 1; i >= 0; i--) {
             if (tokens.get(i).getType() == TokenType.MULTIPLICATION) {
-                return new MultiplicationNode(parse(tokens.subList(0, i)), parse(tokens.subList(i+1, tokens.size())));
+                return new MultiplicationNode(parse(tokens.subList(0, i)), parse(tokens.subList(i + 1, tokens.size())));
             }
             else if (tokens.get(i).getType() == TokenType.DIVISION) {
-                return new DivisionNode(parse(tokens.subList(0, i)), parse(tokens.subList(i+1, tokens.size())));
+                return new DivisionNode(parse(tokens.subList(0, i)), parse(tokens.subList(i + 1, tokens.size())));
             }
         }
         return null;
