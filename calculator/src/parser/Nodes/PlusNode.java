@@ -1,4 +1,4 @@
-package parser;
+package parser.Nodes;
 
 public class PlusNode extends OperatorNode implements AstNode{
 

@@ -1,4 +1,4 @@
-package parser;
+package parser.Nodes;
 
 public class MinusNode extends OperatorNode implements AstNode{
 

@@ -1,4 +1,4 @@
-package parser;
+package parser.Nodes;
 
 public abstract class OperatorNode implements AstNode {
     protected final AstNode left;

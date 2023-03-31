@@ -1,5 +1,5 @@
 import lexer.Lexer;
-import parser.AstNode;
+import parser.Nodes.AstNode;
 import parser.Parser;
 
 public class Main {

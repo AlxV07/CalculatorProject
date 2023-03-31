@@ -1,4 +1,4 @@
-package parser;
+package parser.Nodes;
 
 public record NumberNode (int value) implements AstNode {
     @Override
