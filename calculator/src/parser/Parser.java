@@ -4,6 +4,7 @@ import lexer.Tokens.NumberToken;
 import lexer.Tokens.Token;
 import lexer.Tokens.TokenType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
@@ -28,7 +29,11 @@ public class Parser {
                 parenLevel--;
                 if (parenLevel == 0) {
                     exteriorCloseParenIndex = i;
-                    NumberToken t = new NumberToken(parse(tokens.subList(exteriorOpenParenIndex + 1, exteriorCloseParenIndex)).eval());
+                    List<Token> temp = new ArrayList<>();
+                    for (int j = exteriorOpenParenIndex + 1; j < exteriorCloseParenIndex; j++) {
+                        temp.add(tokens.get(j));
+                    }
+                    NumberToken t = new NumberToken(parse(temp).eval());
                     tokens.subList(exteriorOpenParenIndex, exteriorCloseParenIndex + 1).clear();
                     tokens.add(exteriorOpenParenIndex, t);
                     return parse(tokens);
