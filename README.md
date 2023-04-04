@@ -59,21 +59,20 @@ A Token is a representation of a mathematical symbol or number. OperatorTokens r
 ### ===Parser===
 Located: "calculator_project/calculator/src/parser/Parser.java
 
-Status: Work In Progress
+Status: Completed
 
-The parser is the part of the program that calculates the equation. Once the lexer hs finished its read(String line) method, it will give a List<Token> to the parser to calculate. The parser converts all the Tokens into their corresponding AstNodes and then calculates the result.
-#### Variables:
-- Work in progress; none so far.
+The parser is the part of the program that calculates the equation. Once the lexer has finished its read(String line) method, it will return a List<Token> for the parser to calculate. The parser converts all the List into a tree of the Tokens' corresponding AstNodes and then evaluates the result.
   
 #### Methods:
-- **public AstNode parse(List<Token> tokens)**
-  Currently does nothing, concept described below (See AstNode Tree Concept).
+- **public AstNode parse(List\<Token\> tokens)**
+  
+  Parses a List of Tokens using recursive procedures, building a virtual tree of AstNodes. Returns the top-level AstNode who's eval() method would start a chain of calculations.
 
   
 ### ===AstNodes===
-Located: "calculator_project/calculator/src/parser
+Located: "calculator_project/calculator/src/parser/Nodes
 
-Status: Work In Progress
+Status: Completed
 
   #### Implementations: 
 - **NumberNode**
@@ -91,47 +90,10 @@ Status: Work In Progress
   If the AstNode is a NumberNode, it returns "value"
 
 ### ===AstNode Tree Concept===
-This is what I will be programming the parser to do with the List of Tokens it will receive:
+When the parser receives the List of Tokens in its parse() method, the parser first checks if the List is of length 1; that the List contains a singular token. If this is the case, it returns a new NumberNode with the value of the singular token. Otherwise, it then loops through the List, checking for operator tokens. Once the parser comes across one, it will split the List at the point of the token, and return a new AstNode of the corresponding type as the operator token, whose left and right values are parse() calls to the left and right sections of the split List. Now, if this new AstNode's eval() method would be called, it would eval the two other AstNodes that the parse() calls generated, which in-turn would return their eval() values all the way until the child Nodes are NumberNodes, where they would return their number. Then the operations of each OperatorNode are applied to the values returned by their child OperatorNodes or NumberNodes and the final result is returned.
 
-#### Equation -> Singular OperatorNode
-First, the parser will change all the Number Tokens into NumberNodes. Then, it will it scan the List for any Parentheses. If there are any, it will start converting those into AstNodes. Once the Parentheses and everything between them have been translated, the parser will continue in this manner down the Order of Operations, scanning for Multiplication and Division, and lastly Addition and Subtraction.
+ The process in which the parser loops through the List checking for tokens commences in three separate loops. Each loop checks for a layer in the Order of Operations. They occur in the  following order: Parentheses checks, Addition & Subtraction checks, and finally Multiplication & Division checks.
 
-When the parser locates a Token, it checks the getType() method and follows these orders: 
-- If the Token is a Number Token, the parser will replace the Token with a new NumberNode, with the same value as the Number Token. 
-- If the Token is a Parentheses, the parser will repeat this process except with only the section of the equation in between the Parentheses. Once completed, the parser will remove both Parentheses.
-- If the Token is an operator,  it will replace the Token with a new OperatorNode, with its AstNode variables "left" & "right" being set to the left and right AstNodes of the Token. 
+The reason why Addition and Subtraction are checked before Multiplication & Division is because the tree process calculates from the bottom up, so the higher layers in the Order of Operations should be placed in a lower level than lower layers.
 
-Here is an example of how the parser would "parse" the equation: 1+2*3
-- Step 1: When the parser receives this equation from the lexer, it would look something like this: 
-  
-  _**NumberToken(1),PlusToken,NumberToken(2),MultiplyingToken,NumberToken(3)**_
-
-  The parser would first convert all the NumberTokens into NumberNodes with their corresponding values, resulting in the List becoming:
-
-  _**NumberNode(1),PlusToken,NumberNode(2),MultiplyingToken,NumberNode(3)**_
-
-- Step 2: The parser then scans for Parentheses; finding none, it moves onto Multiplication and locates the MultiplicationToken. It then alters the List to become:
-
-  _**NumberNode(1),PlusToken,MultiplyingNode(NumberNode(2),NumberNode(3))**_
-
-- Step 3: Finally, the parser locates and converts the PlusToken into a PlusNode, and we are left with this:
-
-  _**PlusNode(NumberNode(1), MultiplyingNode(NumberNode(2), NumberNode(3)))**_
-
-  As you can see, there is only one AstNode left in the list; the PlusNode. Everything else from the equation is inside this PlusNode; all the NumberNodes, two of which are in the MultiplyingNode. This PlusNode is what the parse(List<Token> tokens) method would return.
-
-#### Singular OperatorNode -> Single Number (The Result)
-Now that we have this tree sprouting out from the PlusNode, how do we calculate it? All we have to do is to run the eval() method of the PlusNode once in order for it to start a chain reaction that will calculate everything else. If we take a look at the eval() method for an OperatorNode, it returns: left.eval() + right.eval(). This means that it will return the sum of the eval() of the "left" and "right" AstNodes. 
-
-Here is how what it would do if we were to run this PlusNode.eval():
-- Step 1: Firstly, the PlusNode will get its left.eval() + right.eval(), which would be this:
-
-  _**PlusNode.eval()=NumberNode(1).eval()+MultiplyingNode(NumberNode(2),NumberNode(3)).eval()**_
-- Step 2: Next, since the "right" AstNode is a MultiplyingNode, it will return its left.eval() times its right.eval(). This would look like:
-
-  _**PlusNode.eval()=NumberNode(1)+MultiplyingNode.eval()=NumberNode(2).eval()*NumberNode(3).eval()**_
-- Step 3: Now, replacing the NumberNodes with the numbers they represent, the program will calculate:
-  
-  _**PlusNode.eval() = NumberNode(1)+2*3 = 1+6 = 7**_
-
-And the result will be 7.
+Parentheses tokens are not converted into AstNodes. Instead, they are checked for their partner parentheses, and the tokens in between the indices of the two tokens are parsed as a new, separate List and replaced with a new NumberToken with the value of the AstNode of the parse() call.
