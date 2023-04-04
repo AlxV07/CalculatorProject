@@ -14,8 +14,6 @@ To create a calculator that can parse and solve arithmetic problems with Parenth
 ## Project Summary:
 This calculator is split into two components, a lexer and a parser. The lexer takes a valid mathematical equation as a String and converts it into a List of Tokens, which is then fed into the parser. The parser then converts each token into an AstNode, and constructs a "tree" of Number and Operator Nodes. Once it has done this, it calculates the "tree" and returns the result.
 
-So far, I have written Tokens for the Numbers, and Plus & Minus operators. I have written and tested the Lexer for these Tokens. Ast Nodes for Number, Plus, and Minus have also been written, and the Parser is currently a work in progress.
-
 ## Detailed Overview:
 
 ### ===Lexer===
