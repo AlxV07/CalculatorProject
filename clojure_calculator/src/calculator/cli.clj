@@ -1,6 +1,7 @@
 (ns calculator.cli
     (:require [calculator.calculator :as calculator]))
 
+;; Start calculator CLI repl
 (defn start-calculator-repl []
     (println "Welcome to the calculator repl!\nType 'exit' to exit.")
     (loop []

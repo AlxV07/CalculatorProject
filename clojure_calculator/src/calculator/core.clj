@@ -23,6 +23,8 @@
     (println "formatted:" "(12+   2) --->" (calculator/format-input "(12+   2)"))
     (println "formatted:" "(31 ) *(2*2) --->" (calculator/format-input "(31 )*(2*2)"))
 
+    (println "generated random input:" (calculator/random-input))
+
     (println)
 
     (cli/start-calculator-repl))

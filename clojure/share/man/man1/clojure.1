@@ -1,0 +1,207 @@
+.\"to render: groff -Tascii -man doc/clojure.1 > clojure.man"
+.TH CLOJURE 1 "2019 June 6"
+.SH NAME
+clj, clojure \- runners to launch Clojure programs
+
+.SH SYNOPSIS
+
+.B clj
+[\fBclj-opts\fR] [\fB-Aaliases\fR]
+.br
+.B clojure
+[\fBclj-opts\fR] \fB-X\fR[\fBaliases\fR] \fBmy/fn?\fR [\fBkpath v\fR ...] \fBkv-map?\fR
+.br
+.B clojure
+[\fBclj-opts\fR] \fB-T\fR[\fBname|aliases\fR] \fBmy/fn\fR [\fBkpath v\fR ...] \fBkv-map?\fR
+.br
+.B clojure
+[\fBclj-opts\fR] \fB-M\fR[\fBaliases\fR] [\fBinit-opts\fR] [\fBmain-opts\fR] [\fBargs\fR]
+
+.SH DESCRIPTION
+
+The
+.B clojure
+tool is a runner for Clojure programs.
+.B clj
+is a wrapper for
+.B clojure
+that uses rlwrap to provide a better interactive experience.
+Users will typically run
+.BR clj .
+
+.SH EXAMPLES
+
+You can launch a Clojure REPL by running
+.BR clj .
+
+See the Deps and CLI Guide below for more complex usage.
+
+.SH OPTIONS
+
+The
+.B clj
+and
+.B clojure
+scripts can take three types of options, as shown in the
+synopsis.
+.B clj-opts
+are used to build the java-opts and
+classpath.
+.B init-opts
+refer to Clojure code to execute.
+.B main-opts
+are options to clojure.main.
+
+.SS clj-opts
+
+.TP
+.BI \-J opt
+Pass opt through in java_opts, ex: -J-Xmx512m
+
+.TP
+.BI \-A aliases
+Concatenated aliases for REPL execution, ex: -A:dev:mem
+
+.TP
+.BI \-X aliases\ \fIfn\fR " " \fIKPATH\fR " " \fIV\fR " "
+Exec alias to invoke one or more functions that take a map,
+with keypath/value overrides. Function must either be
+supplied or be in :exec-fn argmap for alias
+
+.TP
+.BI \-M aliases
+Exec clojure.main, either from opts in alias or command line
+
+.TP
+.BI \-P
+Prepare - download libs, cache classpath without executing
+
+.TP
+.BI \-Sdeps\  EDN
+Deps data or file to use as the last deps file to be merged
+
+.TP
+.BI \-Spath
+Compute classpath and echo to stdout only
+
+.TP
+.BI \-Stree
+Print dependency tree
+
+.TP
+.BI \-Scp\  CP
+Do NOT compute or cache classpath, use this one instead
+
+.TP
+.BI \-Srepro
+Ignore the ~/.clojure/deps.edn config file
+
+.TP
+.BI \-Sforce
+Force recomputation of the classpath (don't use the cache)
+
+.TP
+.BI \-Sverbose
+Print important path info to console
+
+.TP
+.BI \-Sthreads\  N
+Set specific number of download threads
+
+.TP
+.BI \-Strace
+Write a trace.edn file that traces deps expansion
+
+.TP
+.BI \-\-
+Stop parsing dep options and pass remaining arguments to clojure.main
+
+.TP
+.BI \-\-version
+Write version to stdout and exit
+
+.TP
+.BI \-version
+Write version to stderr and exit
+
+.SS init-opts
+
+.TP
+.BR \-i ", " \-\-init\  \fIpath\fR
+Load a file or resource located at \fIpath\fR
+
+.TP
+.BR \-e ", " \-\-eval\  \fIstring\fR
+Eval exprs in \fIstring\fR; print non-nil values
+
+.TP
+.BR \-\-report\  \fItarget\fR
+Report uncaught exception to \fItarget\fR: "file" (default), "stderr", or "none", overrides System property clojure.main.report
+
+.SS main-opts
+
+
+.TP
+.BR \-m ", " \-\-main\  \fIns-name \fR
+Call the -main function from namespace w/args
+
+.TP
+.BR \-r ", " \-\-repl
+Run a repl
+
+.TP
+.I path
+Run a script from a file or resource located at \fIpath\fR
+
+.TP
+.B \-
+Run a script from standard input
+
+.TP
+.BR \-h ", " \-? ",  " \-\-help
+Print this help message and exit
+
+.SH CONFIGURATION
+
+This script reads configuration from
+.B deps.edn
+files. It will check against
+.B deps.edn
+files in the system root location, the user
+configuration directory (usually
+.BR ~/.clojure ),
+and the local directory. Files in each of these locations, if
+they exist, are merged to form one combined configuration
+file. The last specified configuration file's options
+overwrites any earlier files (e.g. local configs take
+priority).
+
+.SH SEE ALSO
+
+.IP https://clojure.org/guides/deps_and_cli
+Deps and CLI Guide
+.IP https://clojure.org/reference/deps_edn
+deps.edn Reference
+.IP https://clojure.org/reference/clojure_cli
+Clojure CLI Reference
+.IP https://clojure.org/reference/repl_and_main
+REPL and Main Entrypoints
+.IP https://clojure.org/releases/tools
+Release history and changelog
+
+.SH BUGS
+
+File issues at
+https://ask.clojure.org under category Libs / tools.deps.
+
+.SH AUTHORS
+
+clojure and clj are maintained by Alex Miller <alex.miller@cognitect.com>.
+This man page was written by Elana Hashman <ehashman@debian.org>.
+
+.SH COPYRIGHT
+
+Copyright \(co Rich Hickey, Alex Miller and contributors.
+
+Distributed under the Eclipse Public License 1.0, the same as
+Clojure.

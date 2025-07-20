@@ -33,3 +33,20 @@
                         (str (first str-input) (format-input s1 true))
                         (str " " (first str-input) " " (format-input s1))))))))
 
+;; Get a random operator to help generate random input
+;; returns: string of random arithmetic operator
+(def op ["+" "-" "*" "/"])
+(defn random-op []
+    (rand-nth op))
+
+;; Generate random input for evaluation
+;; returns: string of random input
+(defn random-input
+    ([]
+    (let [len (rand-int 7)]
+        (random-input len)))
+    ([nof]
+        (println nof)
+        (if (= nof 0)
+            (rand-int 100)
+            (str (rand-int 100) (random-op) (random-input (- nof 1))))))
