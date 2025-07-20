@@ -1,5 +1,5 @@
 package parser.Nodes;
 
-public interface AstNode {
+public interface ASTNode {
     int eval();
 }

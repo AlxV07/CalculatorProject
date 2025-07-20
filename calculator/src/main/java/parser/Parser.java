@@ -4,58 +4,102 @@ import lexer.Tokens.NumberToken;
 import lexer.Tokens.Token;
 import lexer.Tokens.TokenType;
 import parser.Nodes.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
-    public AstNode parse(List<Token> tokens) {
-        if (tokens.size() == 1) {
-            return new NumberNode(((NumberToken) tokens.get(0)).n());
-        }
-        boolean isInsideParenGroup = false;
-        int exteriorOpenParenIndex = -1;
-        int exteriorCloseParenIndex;
-        int parenLevel = 0;
-        for (int i = 0; i < tokens.size(); i++) {
-            if (tokens.get(i).getType() == TokenType.OPEN) {
-                if (!isInsideParenGroup) {
-                    isInsideParenGroup = true;
-                    exteriorOpenParenIndex = i;
-                }
-                parenLevel++;
+    private List<Token> tokens;
+    private int pos;
+
+    public ASTNode parse(List<Token> t) {
+        tokens = t;
+        pos = 0;
+        return this.parseLevel1();
+    }
+
+    private OperatorNode nodeFromType(TokenType t, ASTNode left, ASTNode right) {
+        switch (t) {
+            case PLUS -> {
+                return new PlusNode(left, right);
             }
-            else if (tokens.get(i).getType() == TokenType.CLOSE) {
-                parenLevel--;
-                if (parenLevel == 0) {
-                    exteriorCloseParenIndex = i;
-                    List<Token> temp = new ArrayList<>();
-                    for (int j = exteriorOpenParenIndex + 1; j < exteriorCloseParenIndex; j++) {
-                        temp.add(tokens.get(j));
-                    }
-                    NumberToken t = new NumberToken(parse(temp).eval());
-                    tokens.subList(exteriorOpenParenIndex, exteriorCloseParenIndex + 1).clear();
-                    tokens.add(exteriorOpenParenIndex, t);
-                    return parse(tokens);
-                }
+            case MINUS -> {
+                return new MinusNode(left, right);
+            }
+            case MULTIPLICATION -> {
+                return new MultiplicationNode(left, right);
+            }
+            case DIVISION -> {
+                return new DivisionNode(left, right);
+            }
+            default -> {
+                return null;
             }
         }
-        for (int i = tokens.size() - 1; i >= 0; i--) {
-            if (tokens.get(i).getType() == TokenType.PLUS) {
-                return new PlusNode(parse(tokens.subList(0, i)), parse(tokens.subList(i + 1, tokens.size())));
-            }
-            else if (tokens.get(i).getType() == TokenType.MINUS) {
-                return new MinusNode(parse(tokens.subList(0, i)), parse(tokens.subList(i + 1, tokens.size())));
-            }
+    }
+
+    private ASTNode parseLevel1() {
+        /*
+        parse `+`, `-` operations
+         */
+        ASTNode node = parseLevel2();
+        Token next = peek();
+        while (next != null && (next.getType() == TokenType.PLUS || next.getType() == TokenType.MINUS)) {
+            Token op = consume(next.getType());
+            ASTNode right = parseLevel2();
+            node = nodeFromType(op.getType(), node, right);
+            next = peek();
         }
-        for (int i = tokens.size() - 1; i >= 0; i--) {
-            if (tokens.get(i).getType() == TokenType.MULTIPLICATION) {
-                return new MultiplicationNode(parse(tokens.subList(0, i)), parse(tokens.subList(i + 1, tokens.size())));
-            }
-            else if (tokens.get(i).getType() == TokenType.DIVISION) {
-                return new DivisionNode(parse(tokens.subList(0, i)), parse(tokens.subList(i + 1, tokens.size())));
-            }
+        return node;
+    }
+
+    private ASTNode parseLevel2() {
+        /*
+        parse `*`, `/` operations
+         */
+        ASTNode node = parseLevel3();
+        Token next = peek();
+        while (next != null && (next.getType() == TokenType.MULTIPLICATION || next.getType() == TokenType.DIVISION)) {
+            Token op = consume(next.getType());
+            ASTNode right = parseLevel3();
+            node = nodeFromType(op.getType(), node, right);
+            next = peek();
         }
-        return null;
+        return node;
+    }
+
+    private ASTNode parseLevel3() {
+        /*
+        parse `#`, `(`, `)` tokens
+         */
+        Token token = peek();
+        assert token != null;
+        if (token.getType() == TokenType.NUMBER) {
+            consume(TokenType.NUMBER);
+            return new NumberNode(((NumberToken) token).n());
+        } else if (token.getType() == TokenType.OPEN) {
+            consume(TokenType.OPEN);
+            ASTNode node = parseLevel1();
+            consume(TokenType.CLOSE);
+            return node;
+        } else {
+            throw new RuntimeException("Unexpected token: " + token);
+        }
+    }
+
+    private Token peek() {
+        if (pos < tokens.size()) {
+            return tokens.get(pos);
+        } else {
+            return null;
+        }
+    }
+
+    private Token consume(TokenType type) {
+        Token token = peek();
+        assert token != null;
+        if (token.getType() != type) {
+            throw new RuntimeException("Expected " + type + ", got " + token.getType());
+        }
+        ++pos;
+        return token;
     }
 }

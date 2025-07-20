@@ -1,8 +1,8 @@
 package parser.Nodes;
 
-public class DivisionNode extends OperatorNode implements AstNode{
+public class DivisionNode extends OperatorNode implements ASTNode {
 
-    public DivisionNode(AstNode left, AstNode right) {
+    public DivisionNode(ASTNode left, ASTNode right) {
         super(left, right);
     }
 
