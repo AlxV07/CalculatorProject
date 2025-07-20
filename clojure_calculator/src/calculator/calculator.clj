@@ -8,3 +8,28 @@
 ;; returns: numerical calculation of input
 (defn calculate [str-input]
     (astnode/eval-node (parser/parse (lexer/lex str-input))))
+
+;; Format input string to be ready to send to calculator
+;; `str-input`: input string to format
+;; `was-digit` (OPTIONAL): set any value (overloaded constructor) to indicate last char was a digit
+;; returns: formatted string ready for calculating
+(defn format-input
+    ([str-input]
+        (if (empty? str-input)
+            str-input
+            (let [s1 (subs str-input 1)]
+                (if (= \space (first str-input))
+                    (format-input s1)
+                    (if (Character/isDigit (first str-input))
+                        (str (first str-input) (format-input s1 true))
+                        (str (first str-input) " " (format-input s1)))))))
+    ([str-input was-digit]
+        (if (empty? str-input)
+            str-input
+            (let [s1 (subs str-input 1)]
+                (if (= \space (first str-input))
+                    (str " " (format-input s1))
+                    (if (Character/isDigit (first str-input))
+                        (str (first str-input) (format-input s1 true))
+                        (str " " (first str-input) " " (format-input s1))))))))
+

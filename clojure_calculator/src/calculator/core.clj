@@ -1,5 +1,6 @@
 (ns calculator.core
-    (:require [calculator.calculator :as calculator]))
+    (:require [calculator.calculator :as calculator])
+    (:require [calculator.cli :as cli]))
 
 (defn -main []
 ;;       (println "Hello from core!")
@@ -13,4 +14,15 @@
     (def y (calculator/calculate "3 + 4"))
     (println "x =" x)
     (println "y =" y)
-    (println "x + y =" (+ x y)))
+    (println "x + y =" (+ x y))
+
+    (println "formatted:" "(1+2) --->" (calculator/format-input "(1+2)"))
+    (println "formatted:" "(1+   2) --->" (calculator/format-input "(1+   2)"))
+    (println "formatted:" "(   1+   2) + (3 ) --->" (calculator/format-input "(   1+   2) + (3 )"))
+    (println "formatted:" "(   1+   2) + (3 ) *(2*2) --->" (calculator/format-input "(   1+   2) + (3 )*(2*2)"))
+    (println "formatted:" "(12+   2) --->" (calculator/format-input "(12+   2)"))
+    (println "formatted:" "(31 ) *(2*2) --->" (calculator/format-input "(31 )*(2*2)"))
+
+    (println)
+
+    (cli/start-calculator-repl))
