@@ -1,4 +1,8 @@
 # Calculator Project
+
+My first programming project ever (which I started in 2022) - 
+I came back to this in 2025 and rewrote in Clojure :D
+
 # Table of Contents:
 1. Goal
 2. Project Summary
