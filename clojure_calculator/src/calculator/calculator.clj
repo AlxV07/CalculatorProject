@@ -46,7 +46,6 @@
     (let [len (rand-int 7)]
         (random-input len)))
     ([nof]
-        (println nof)
         (if (= nof 0)
             (rand-int 100)
             (str (rand-int 100) (random-op) (random-input (- nof 1))))))

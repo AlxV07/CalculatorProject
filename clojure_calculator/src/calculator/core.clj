@@ -24,6 +24,10 @@
     (println "formatted:" "(31 ) *(2*2) --->" (calculator/format-input "(31 )*(2*2)"))
 
     (println "generated random input:" (calculator/random-input))
+    (println "generated random input:" (calculator/random-input))
+    (println "generated random input:" (calculator/random-input))
+    (println "generated random input:" (calculator/random-input))
+    (println "generated random input:" (calculator/random-input))
 
     (println)
 
